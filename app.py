@@ -326,7 +326,9 @@ def Page():
                     "color": text_color,
                     "margin-right": "8px"
                 }
-                solara.HTML(tag="div", style=style, children="7")
+                # Use a Column styled as a circle since solara.HTML doesn't support children here
+                with solara.Column(style=style, align="center"):
+                    solara.Text("7")
                 solara.Markdown(label)
 
         LegendItem(COLOR_OK, f"**White**: Comfortable")
@@ -337,7 +339,7 @@ def Page():
         solara.Markdown("---")
         solara.Markdown("**🌱 Environment**")
         solara.Markdown(f"- 🟢 **Lime**: Food Patch")
-        solara.Markdown(f"- 🟧 **Orange**: Social Scent Trace")
+        solara.Markdown(f"- 🟠 **Orange**: Social Scent Trace")
 
     # Main View
     if shared.simulation_model:
