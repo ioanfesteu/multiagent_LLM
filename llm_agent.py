@@ -99,11 +99,11 @@ def decide_action(state, heatmap):
     """
     
     try:
-        # Request JSON mode, but keep stripping logic for models that might ignore it
+        # Gemma 3 does NOT support native JSON mode yet in SDK 1.0 (throws 400)
+        # We rely on prompt instructions and manual stripping
         response = client.models.generate_content(
             model=MODEL_NAME,
-            contents=prompt,
-            config={'response_mime_type': 'application/json'}
+            contents=prompt
         )
         
         text = response.text.strip()
