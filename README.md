@@ -4,7 +4,7 @@
 
 This project implements a multi-agent simulation environment designed to explore the interaction between autonomous agents and an external Large Language Model (LLM) acting as an observer and caretaker. Built upon the principles of Active Inference and allostatic regulation, the simulation features agents that navigate a dynamic environment, managing their internal physiological states (energy and temperature). The system provides a dual interface: a **Solara-based GUI** for human observation and control, and a **Flask API** that allows an external LLM agent (powered by **Google Gemma 3**) to monitor the simulation state and intervene by providing resources (food) when necessary. This setup enables research into hybrid human-AI-agent systems and the emergent behaviors of AI caretakers.
 
-> **Note:** This project is an evolution of the [multiagent_FEP](https://github.com/ioanfesteu/multiagent_FEP) project by Ioan Festeu, extending it with external LLM agency capabilities.
+> **Note:** This project is an evolution of the [multiagent_FEP](https://github.com/ioanfesteu/multiagent_FEP) project, extending it with external LLM agency capabilities.
 
 ## 🚀 Features
 

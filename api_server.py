@@ -113,4 +113,4 @@ def drop_food():
 
 def run_api_server():
     print("Starting Flask API on port 5000...")
-    app.run(port=5000, debug=False, use_reloader=False, host='0.0.0.0')
+    app.run(port=5000, debug=True, use_reloader=False, host='0.0.0.0')

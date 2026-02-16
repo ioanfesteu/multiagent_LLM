@@ -7,7 +7,7 @@ from mesa import Agent
 # ==========================================
 
 # --- Simulation Dimensions ---
-GRID_WIDTH = 80
+GRID_WIDTH = 40
 GRID_HEIGHT = 40
 NUM_AGENTS = 10
 SEED = 3 # Set to an integer for reproducibility
