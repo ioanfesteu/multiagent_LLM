@@ -1,3 +1,12 @@
+---
+title: Multiagent ABM Simulation
+emoji: 🤖
+colorFrom: yellow
+colorTo: red
+sdk: docker
+app_port: 7860
+---
+
 # Multiagent LLM: Observers & Caretakers
 
 ## Abstract
