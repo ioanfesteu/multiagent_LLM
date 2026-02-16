@@ -300,6 +300,18 @@ def Page():
         solara.Markdown("---")
         solara.Markdown("**API Status:**")
         solara.Markdown("Flask Server running on port 5000")
+        
+        solara.Markdown("---")
+        solara.Markdown("**🎨 Map Legend (Agent Status)**")
+        solara.Markdown(f"- ⚪ **White**: {COLOR_OK} (Comfortable)")
+        solara.Markdown(f"- 🟫 **Brown**: {COLOR_HUNGRY} (Hungry / Low Energy)")
+        solara.Markdown(f"- 🟦 **Blue**: {COLOR_COLD} (Cold)")
+        solara.Markdown(f"- 🟥 **Red**: {COLOR_HOT} (Hot)")
+        # solara.Markdown(f"- ⬜ **Gray**: {COLOR_DEAD} (Dead)")
+        solara.Markdown("---")
+        solara.Markdown("**🌱 Environment**")
+        solara.Markdown(f"- 🟢 **Lime**: {COLOR_FOOD} (Food Patch)")
+        solara.Markdown(f"- 🟧 **Orange**: Social Scent Trace")
 
     # Main View
     if shared.simulation_model:
