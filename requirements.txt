@@ -1,0 +1,7 @@
+flask
+mesa
+numpy
+solara
+matplotlib
+requests
+google-generativeai
