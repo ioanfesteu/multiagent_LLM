@@ -94,6 +94,11 @@ def get_plot_figure(model, step_number=0, selected_id=None):
         z = 20 if is_selected else 10
             
         ax.scatter(x, y, c=c, s=120, edgecolors=ec, linewidth=lw, zorder=z)
+        
+        # Add numeric label
+        ax.text(x, y, str(agent.unique_id), color='black', fontsize=8, 
+                fontweight='bold', ha='center', va='center', zorder=z+1,
+                bbox=dict(boxstyle='circle,pad=0.1', facecolor='white', alpha=0.7, edgecolor='none'))
 
     # 5. Overlay Text
     if n_alive > 0:
