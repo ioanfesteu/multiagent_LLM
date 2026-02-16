@@ -10,7 +10,7 @@ from mesa import Agent
 GRID_WIDTH = 40
 GRID_HEIGHT = 40
 NUM_AGENTS = 10
-SEED = 3 # Set to an integer for reproducibility
+SEED = None  # None for random seed on every reset
 
 # --- Agent Physiology (Life & Death) ---
 METABOLISM = 0.15          # Energy consumed per step

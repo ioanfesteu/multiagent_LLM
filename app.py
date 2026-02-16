@@ -237,7 +237,8 @@ def Page():
     def on_reset():
         with shared.simulation_lock:
             shared.simulation_model = DualDriveModel()
-        set_tick(0)
+        # Force a UI update by changing tick even if it was 0
+        set_tick(lambda t: 0 if t != 0 else -1)
         set_playing(False)
         set_selected_agent_id(None)
         
@@ -255,6 +256,10 @@ def Page():
                     with shared.simulation_lock:
                         if shared.simulation_model:
                             shared.simulation_model.step()
+                            # Check if simulation should end
+                            if len(shared.simulation_model.agents) == 0:
+                                set_playing(False)
+                                break
                     set_tick(lambda t: t + 1)
                     await asyncio.sleep(0.1)
             except asyncio.CancelledError:
@@ -303,14 +308,35 @@ def Page():
         
         solara.Markdown("---")
         solara.Markdown("**🎨 Map Legend (Agent Status)**")
-        solara.Markdown(f"- ⚪ **White**: {COLOR_OK} (Comfortable)")
-        solara.Markdown(f"- 🟫 **Brown**: {COLOR_HUNGRY} (Hungry / Low Energy)")
-        solara.Markdown(f"- 🟦 **Blue**: {COLOR_COLD} (Cold)")
-        solara.Markdown(f"- 🟥 **Red**: {COLOR_HOT} (Hot)")
-        # solara.Markdown(f"- ⬜ **Gray**: {COLOR_DEAD} (Dead)")
+        
+        def LegendItem(color, label, text_color="black"):
+            with solara.Row(style={"align-items": "center", "margin-bottom": "4px"}):
+                # Mimic the map marker: circle, border, number
+                style = {
+                    "width": "24px",
+                    "height": "24px",
+                    "border-radius": "50%",
+                    "background-color": color,
+                    "border": "1.5px solid black",
+                    "display": "flex",
+                    "align-items": "center",
+                    "justify-content": "center",
+                    "font-size": "10px",
+                    "font-weight": "bold",
+                    "color": text_color,
+                    "margin-right": "8px"
+                }
+                solara.HTML(tag="div", style=style, children="7")
+                solara.Markdown(label)
+
+        LegendItem(COLOR_OK, f"**White**: Comfortable")
+        LegendItem(COLOR_HUNGRY, f"**Brown**: Hungry / Low Energy", text_color="white")
+        LegendItem(COLOR_COLD, f"**Blue**: Cold", text_color="white")
+        LegendItem(COLOR_HOT, f"**Red**: Hot", text_color="white")
+        
         solara.Markdown("---")
         solara.Markdown("**🌱 Environment**")
-        solara.Markdown(f"- 🟢 **Lime**: {COLOR_FOOD} (Food Patch)")
+        solara.Markdown(f"- 🟢 **Lime**: Food Patch")
         solara.Markdown(f"- 🟧 **Orange**: Social Scent Trace")
 
     # Main View

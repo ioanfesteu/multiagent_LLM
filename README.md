@@ -19,7 +19,7 @@ This project implements a multi-agent simulation environment designed to explore
 
 1.  **Clone the repository**:
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/ioanfesteu/multiagent_LLM.git
     cd multiagent_LLM
     ```
 
