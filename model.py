@@ -65,6 +65,7 @@ class DualDriveModel(Model):
 
         # ✅ FIX: Statistics for dead agents
         self.dead_count = 0
+        self.steps = 0
 
         # Spawn Agents
         for i in range(num_agents):
@@ -91,6 +92,7 @@ class DualDriveModel(Model):
 
     def step(self):
         """✅ FIX: Optimized for dead agent cleanup and NumPy operations"""
+        self.steps += 1
         # 1. Agents step
         agents = list(self.agents)
         self.random.shuffle(agents)  # ✅ FIX: Using self.random (no longer need random_gen)

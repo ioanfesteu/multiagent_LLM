@@ -23,7 +23,7 @@ def get_state():
         alive_agents = [a for a in agents if a.is_alive]
         
         state = {
-            "step": model.schedule.steps if hasattr(model, 'schedule') else 0, # Mesa models usually have schedule
+            "step": model.steps,
             # Check if model has schedule, if not use internal counter if any. 
             # Our DualDriveModel doesn't explicitly use a scheduler in the FEP code, 
             # but we can infer step from data collector or add a step counter.

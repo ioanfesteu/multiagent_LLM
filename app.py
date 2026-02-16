@@ -224,7 +224,8 @@ if shared.simulation_model is None:
 @solara.component
 def Page():
     # Use state to track ticks and trigger re-renders
-    tick, set_tick = solara.use_state(0)
+    # Initialize with global model steps to avoid desync on page refresh
+    tick, set_tick = solara.use_state(shared.simulation_model.steps if shared.simulation_model else 0)
     is_playing, set_playing = solara.use_state(False)
     selected_agent_id, set_selected_agent_id = solara.use_state(None)
     
@@ -232,13 +233,14 @@ def Page():
         with shared.simulation_lock:
             if shared.simulation_model:
                 shared.simulation_model.step()
-        set_tick(tick + 1)
+                # Sync with global model steps
+                set_tick(shared.simulation_model.steps)
 
     def on_reset():
         with shared.simulation_lock:
             shared.simulation_model = DualDriveModel()
-        # Force a UI update by changing tick even if it was 0
-        set_tick(lambda t: 0 if t != 0 else -1)
+        # Reset tick to 0 to match new model
+        set_tick(0)
         set_playing(False)
         set_selected_agent_id(None)
         
@@ -253,14 +255,16 @@ def Page():
         async def loop():
             try:
                 while True:
+                    current_step = 0
                     with shared.simulation_lock:
                         if shared.simulation_model:
                             shared.simulation_model.step()
+                            current_step = shared.simulation_model.steps
                             # Check if simulation should end
                             if len(shared.simulation_model.agents) == 0:
                                 set_playing(False)
                                 break
-                    set_tick(lambda t: t + 1)
+                    set_tick(current_step)
                     await asyncio.sleep(0.1)
             except asyncio.CancelledError:
                 pass

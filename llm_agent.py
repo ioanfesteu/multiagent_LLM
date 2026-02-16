@@ -6,7 +6,7 @@ import config
 
 # Configuration
 API_URL = "http://localhost:5000/api"
-MODEL_NAME = "gemma-3-12b-it" 
+MODEL_NAME = "gemma-3-4b-it" 
 
 # Setup Gemini Client (New SDK 1.0 architecture)
 client = genai.Client(api_key=config.GEMINI_API_KEY)
