@@ -1,4 +1,4 @@
-import google.generativeai as genai
+from google import genai
 import requests
 import time
 import json
@@ -6,29 +6,37 @@ import config
 
 # Configuration
 API_URL = "http://localhost:5000/api"
-MODEL_NAME = "gemma-3-12b-it"  # High rate limits (30 RPM, 14.4K RPD)
+MODEL_NAME = "gemma-3-12b-it" 
 
-# Setup Gemini
-genai.configure(api_key=config.GEMINI_API_KEY)
-model = genai.GenerativeModel(MODEL_NAME)
+# Setup Gemini Client (New SDK 1.0 architecture)
+client = genai.Client(api_key=config.GEMINI_API_KEY)
 
-def get_simulation_state():
-    try:
-        response = requests.get(f"{API_URL}/state")
-        response.raise_for_status()
-        return response.json()
-    except Exception as e:
-        print(f"Error fetching state: {e}")
-        return None
+def get_simulation_state(retries=3):
+    for i in range(retries):
+        try:
+            response = requests.get(f"{API_URL}/state", timeout=5)
+            response.raise_for_status()
+            return response.json()
+        except Exception as e:
+            if i < retries - 1:
+                print(f"⚠️ State API temporary unavailable, retrying ({i+1}/{retries})...")
+                time.sleep(2)
+            else:
+                print(f"❌ Error fetching state after {retries} attempts: {e}")
+    return None
 
-def get_grid_heatmap():
-    try:
-        response = requests.get(f"{API_URL}/grid/heatmap")
-        response.raise_for_status()
-        return response.json()
-    except Exception as e:
-        print(f"Error fetching heatmap: {e}")
-        return None
+def get_grid_heatmap(retries=2):
+    for i in range(retries):
+        try:
+            response = requests.get(f"{API_URL}/grid/heatmap", timeout=5)
+            response.raise_for_status()
+            return response.json()
+        except Exception as e:
+            if i < retries - 1:
+                time.sleep(1)
+            else:
+                print(f"Error fetching heatmap: {e}")
+    return None
 
 def decide_action(state, heatmap):
     # Construct prompt
@@ -91,16 +99,20 @@ def decide_action(state, heatmap):
     """
     
     try:
-        # Gemma 3 API doesn't support response_mime_type="application/json" yet
-        response = model.generate_content(prompt)
-        text = response.text
+        # Request JSON mode, but keep stripping logic for models that might ignore it
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            contents=prompt,
+            config={'response_mime_type': 'application/json'}
+        )
         
-        # Clean up markdown code blocks if present
+        text = response.text.strip()
+        # Fallback stripping for potential Markdown blocks from older models/Gemma
         if "```json" in text:
             text = text.split("```json")[1].split("```")[0]
         elif "```" in text:
             text = text.split("```")[1].split("```")[0]
-            
+
         return json.loads(text.strip())
     except Exception as e:
         print(f"Error generating decision: {e}")
