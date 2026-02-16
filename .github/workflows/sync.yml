@@ -16,4 +16,4 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         # run: git push --force https://ioanfesteu:$HF_TOKEN@huggingface.co/spaces/ioanfesteu/Caretakers main
-        run: git push --force https://ioanfesteu:$HF_TOKEN@huggingface.co/spaces/ioanfesteu/Caretakers HEAD:main
+        run: git push --force https://ioanfesteu:$HF_TOKEN@huggingface.co/spaces/ioanF/Caretakers HEAD:main
