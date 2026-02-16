@@ -1,5 +1,6 @@
-Flask==2.2.2
-Mesa==3.0.3
+Flask>=3.0.0
+Werkzeug>=3.0.0
+Mesa[viz]==3.0.3
 numpy==1.25.2
 solara==1.57.2
 matplotlib==3.8.0
