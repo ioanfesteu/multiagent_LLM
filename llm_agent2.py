@@ -7,8 +7,8 @@ import sys
 import re
 
 # Configuration
-# API_URL = "http://localhost:5000/api"
-API_URL = "https://ioanf-caretakers.hf.space/api"
+API_URL = "http://localhost:5000/api"
+# API_URL = "https://ioanf-caretakers.hf.space/api"
 MODEL_NAME = "gemini-2.0-flash" 
 
 # Setup Gemini Client (New SDK 1.0 architecture)

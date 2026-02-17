@@ -7,9 +7,9 @@ from mesa import Agent
 # ==========================================
 
 # --- Simulation Dimensions ---
-GRID_WIDTH = 40
+GRID_WIDTH = 80
 GRID_HEIGHT = 40
-NUM_AGENTS = 10
+NUM_AGENTS = 20
 SEED = None  # None for random seed on every reset
 
 # --- Agent Physiology (Life & Death) ---
@@ -41,7 +41,7 @@ MU_AFFECT = 0.4            # Affect integration rate / Emotional stability
 SIGMA = 0.8                # Precision sensitivity to affect / Psychosomatic coupling
 
 # --- Environment Generation ---
-NUM_FOOD_PATCHES = 1
+NUM_FOOD_PATCHES = 2
 FOOD_PATCH_AMOUNT_MIN = 30
 FOOD_PATCH_AMOUNT_MAX = 80
 TEMP_BASE_MAX = 28.0       # Temperatura maxima a zonei centrale

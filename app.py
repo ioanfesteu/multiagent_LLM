@@ -34,8 +34,14 @@ def get_plot_figure(model, step_number=0, selected_id=None):
     Visualization logic adapted from FEP project.
     """
     aspect_ratio = model.grid.width / model.grid.height
-    fig_width = 8 * (aspect_ratio if aspect_ratio > 1 else 1)
-    fig = plt.figure(figsize=(fig_width, 6))
+    
+    # Set a base width for the figure in inches. A larger value will create a higher-resolution image
+    # that will scale down to fit the window width.
+    fig_width = 12
+    # Calculate height to match the plot's aspect ratio, reducing whitespace.
+    fig_height = fig_width / aspect_ratio
+
+    fig = plt.figure(figsize=(fig_width, fig_height))
     ax = fig.add_subplot(111)
     
     # 1. Heatmap (Temperature)
@@ -124,7 +130,7 @@ def get_plot_figure(model, step_number=0, selected_id=None):
     ax.set_ylim(-0.5, model.grid.height-0.5)
     ax.axis('off')
     ax.set_aspect('equal')
-    plt.tight_layout()
+    plt.tight_layout(pad=0)
     plt.close(fig)
     return fig
 
@@ -183,11 +189,7 @@ def AgentCard(agent, tick):
     energy_color = "green" if agent.E_int > 60 else ("orange" if agent.E_int > 30 else "red")
         
     # Valence Color Logic (Mood)
-    valence_color = "dodgerblue"
-    if agent.valence_integrated < -0.5:
-        valence_color = "red"
-    elif agent.valence_integrated > 0.5:
-        valence_color = "limegreen"
+    valence_color = "limegreen" if agent.valence_integrated >= 0 else "red"
 
     with solara.Card(f"Monitoring Agent {agent.unique_id}", subtitle=f"Pos: ({agent.pos[0]}, {agent.pos[1]})", margin=1):
         with solara.Column():
