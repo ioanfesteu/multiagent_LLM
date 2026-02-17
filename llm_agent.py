@@ -3,9 +3,11 @@ import requests
 import time
 import json
 import config
+import sys
 
 # Configuration
-API_URL = "http://localhost:5000/api"
+# API_URL = "http://localhost:5000/api"
+API_URL = "https://ioanf-caretakers.hf.space/api"
 MODEL_NAME = "gemma-3-4b-it" 
 
 # Setup Gemini Client (New SDK 1.0 architecture)
@@ -38,7 +40,7 @@ def get_grid_heatmap(retries=2):
                 print(f"Error fetching heatmap: {e}")
     return None
 
-def decide_action(state, heatmap):
+def decide_action(state, heatmap, dims):
     # Construct prompt
     # Extract detailed metrics
     agents_details = state.get("agents_details", [])
@@ -69,6 +71,8 @@ def decide_action(state, heatmap):
 
     heatmap_summary = json.dumps(heatmap.get("heatmap", [])[:20]) 
     
+    width, height = dims
+    
     prompt = f"""
     You are the benevolent Overseer of a digital ant farm simulation.
     
@@ -92,8 +96,8 @@ def decide_action(state, heatmap):
     {{
         "thought": "Your reasoning here...",
         "action": "drop_food" or "wait",
-        "x": <integer 0-79> (only if drop_food),
-        "y": <integer 0-39> (only if drop_food),
+        "x": <integer 0-{width-1}> (only if drop_food),
+        "y": <integer 0-{height-1}> (only if drop_food),
         "amount": <float> (only if drop_food, default 30.0)
     }}
     """
@@ -141,26 +145,61 @@ def execute_action(decision):
 def main():
     print("🤖 LLM Agent Initialized. Connecting to Simulation...")
     
-    # Wait for simulation to start
+    # Așteptăm puțin să ne asigurăm că serverul e pornit
     time.sleep(2)
     
     while True:
         state = get_simulation_state()
+        
         if state:
+            # --- VERIFICARE STOP ---
+            alive_count = state.get("agents_alive", 0)
+            
+            if alive_count == 0:
+                print("\n💀 TOȚI AGENȚII SUNT MORȚI.")
+                print("Misiunea Overseer-ului s-a încheiat. Opresc scriptul pentru a economisi resurse.")
+                sys.exit(0) # Închide scriptul complet
+            # -----------------------
+
             heatmap = get_grid_heatmap()
-            # Gemma 3 has 30 RPM, so we can poll more frequently (every 2-3 seconds)
+            dims = heatmap.get("dims", [40, 40]) # Fallback la 40x40 daca API-ul nu raspunde corect
             step = state.get("step", 0)
             
-            # Decide every step or every few steps
-            print(f"Step {step}: Thinking...")
-            decision = decide_action(state, heatmap)
+            print(f"Step {step}: Thinking (Agents alive: {alive_count})...")
+            decision = decide_action(state, heatmap, dims)
+            
             if decision:
                 execute_action(decision)
             
-            # 30 RPM = 1 request every 2 seconds.
+            # Pauză între iterații (respectăm cota de 30 RPM a Gemma 3)
             time.sleep(2.5) 
         else:
-            time.sleep(1.0) 
+            print("⚠️ Nu am putut prelua starea simulării. Reîncerc...")
+            time.sleep(5.0)
+
+# def main():
+#     print("🤖 LLM Agent Initialized. Connecting to Simulation...")
+    
+#     # Wait for simulation to start
+#     time.sleep(2)
+    
+#     while True:
+#         state = get_simulation_state()
+#         if state:
+#             heatmap = get_grid_heatmap()
+#             # Gemma 3 has 30 RPM, so we can poll more frequently (every 2-3 seconds)
+#             step = state.get("step", 0)
+            
+#             # Decide every step or every few steps
+#             print(f"Step {step}: Thinking...")
+#             decision = decide_action(state, heatmap)
+#             if decision:
+#                 execute_action(decision)
+            
+#             # 30 RPM = 1 request every 2 seconds.
+#             time.sleep(2.5) 
+#         else:
+#             time.sleep(1.0) 
 
 if __name__ == "__main__":
     main()
